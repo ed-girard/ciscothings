@@ -1,0 +1,12 @@
+config ap name {{ apDict.NAME }} AP{{ apDict.MAC }}
+config ap location {{ apDict.SITECODE }} {{ apDict.NAME }}
+config ap primary-base USNEW-GSSC-WLC01 {{ apDict.NAME }} 10.90.53.21
+config ap mode flexconnect submode none {{ apDict.NAME }}
+config ap disable {{ apDict.NAME }}
+config ap flexconnect vlan enable {{ apDict.NAME }}
+config ap flexconnect vlan native 30 {{ apDict.NAME }}
+config flexconnect group {{ apDict.GROUP }} ap add {{ apDict.MAC }}
+config ap enable {{ apDict.NAME }}
+config ap group-name {{ apDict.GROUP }} {{ apDict.NAME }}
+y
+

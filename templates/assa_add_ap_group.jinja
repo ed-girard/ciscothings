@@ -1,0 +1,49 @@
+{# wlan.GROUPNAME format: DIVI_SITECD #}
+{# wlan.CHANNELWIDTH: 20 for dense environments, 40 for sparse environments #}
+{# wlan.VLAN: Native VLAN and Data VLAN - May need to be tweaked for non-standard deployment #}
+
+{# RF Profiles - 2.4G #}
+config rf-profile create 802.11b {{ wlan.GROUPNAME }}_2.4
+{# Change only non-default data rates #}
+config rf-profile data-rates 802.11b disabled 1 {{ wlan.GROUPNAME }}_2.4
+config rf-profile data-rates 802.11b disabled 2 {{ wlan.GROUPNAME }}_2.4
+config rf-profile data-rates 802.11b disabled 5.5 {{ wlan.GROUPNAME }}_2.4
+config rf-profile data-rates 802.11b disabled 9 {{ wlan.GROUPNAME }}_2.4
+config rf-profile tx-power-control-thresh-v1 -67 {{ wlan.GROUPNAME }}_2.4
+
+{# RF Profiles - 5G #}
+config rf-profile create 802.11a {{ wlan.GROUPNAME }}_5
+{# Change only non-default data rates #}
+config rf-profile data-rates 802.11a disabled 6 {{ wlan.GROUPNAME }}_5
+config rf-profile data-rates 802.11a disabled 9 {{ wlan.GROUPNAME }}_5
+config rf-profile data-rates 802.11a supported 24 {{ wlan.GROUPNAME }}_5
+config rf-profile tx-power-control-thresh-v1 -67 {{ wlan.GROUPNAME }}_5
+config rf-profile channel chan-width {{ wlan.CHANNELWIDTH }} {{ wlan.GROUPNAME }}_5
+{# Add region specific channels to defaults #}
+config rf-profile channel add 144 {{ wlan.GROUPNAME }}_5
+config rf-profile channel add 149 {{ wlan.GROUPNAME }}_5
+config rf-profile channel add 153 {{ wlan.GROUPNAME }}_5
+config rf-profile channel add 157 {{ wlan.GROUPNAME }}_5
+config rf-profile channel add 161 {{ wlan.GROUPNAME }}_5
+
+{# AP Group #}
+config wlan apgroup add {{ wlan.GROUPNAME }}
+config wlan apgroup profile-mapping add {{ wlan.GROUPNAME }} {{ wlan.GROUPNAME }}_2.4
+y
+config wlan apgroup profile-mapping add {{ wlan.GROUPNAME }} {{ wlan.GROUPNAME }}_5
+y
+config wlan apgroup interface-mapping add {{ wlan.GROUPNAME }} 4 management
+config wlan apgroup interface-mapping add {{ wlan.GROUPNAME }} 5 management
+config wlan apgroup interface-mapping add {{ wlan.GROUPNAME }} 10 management
+
+{# FlexConnect Group #}
+config flexconnect group {{ wlan.GROUPNAME }} add
+config flexconnect group {{ wlan.GROUPNAME }} vlan enable
+config flexconnect group {{ wlan.GROUPNAME }} vlan native {{ wlan.VLAN }}
+config flexconnect group {{ wlan.GROUPNAME }} vlan override-ap enable
+y
+config flexconnect group {{ wlan.GROUPNAME }} wlan-vlan wlan 4 add vlan {{ wlan.VLAN }}
+config flexconnect group {{ wlan.GROUPNAME }} wlan-vlan wlan 5 add vlan {{ wlan.VLAN }}
+config flexconnect group {{ wlan.GROUPNAME }} wlan-vlan wlan 10 add vlan {{ wlan.VLAN }}
+
+save
